@@ -3,9 +3,9 @@
 %global shortcommit %(c=%{commit}; echo ${c:0:7})
 
 Name:           v4l2-relayd
-Summary:        Utils for relaying Gstreamer source to any other Gstreamer source.
+Summary:        Utils for relaying Gstreamer source to any other Gstreamer source
 Version:        0.1.2
-Release:        1.%{commitdate}git%{shortcommit}%{?dist}
+Release:        2.%{commitdate}git%{shortcommit}%{?dist}
 License:        GPLv2
 
 Source:         https://gitlab.com/vicamo/v4l2-relayd//-/archive/%{commit}/%{name}-%{shortcommit}.tar.gz
@@ -21,9 +21,10 @@ BuildRequires:  glib-devel
 BuildRequires:  gstreamer1-devel
 BuildRequires:  gstreamer1-plugins-base-devel
 
-Requires:       glib2
+Requires:       glib2 >= 2.74.1
 Requires:       gstreamer1
 Requires:       gstreamer1-plugins-base
+Requires:       v4l2loopback
 
 %description
 This is used to relay the input Gstreamer source to an output Gstreamer source.
@@ -57,15 +58,16 @@ install -p -D -m 0644 data/systemd/v4l2-relayd.service %{buildroot}/usr/lib/syst
 %dir %{_sysconfdir}/default
 %dir %{_sysconfdir}/modprobe.d
 %dir %{_sysconfdir}/modules-load.d
-%{_sysconfdir}/default/v4l2-relayd
-%{_sysconfdir}/modprobe.d/v4l2-relayd.conf
-%{_sysconfdir}/modules-load.d/v4l2-relayd.conf
+%config(noreplace) %{_sysconfdir}/default/v4l2-relayd
+%config(noreplace) %{_sysconfdir}/modprobe.d/v4l2-relayd.conf
+%config(noreplace) %{_sysconfdir}/modules-load.d/v4l2-relayd.conf
 %dir /usr/lib/systemd
 /usr/lib/systemd/v4l2-relayd.service
 
 %changelog
-* Tue Nov 29 2022 Kate Hsuan <hpa@redhat.com> - 0.0-1.20220926git3b7cdb9
+* Thu Jan 12 2023 Kate Hsuan <hpa@redhat.com> - 0.1.2-2.20220126git2e4d5c9
+- Add "Requires: v4l2loopback"
+
+* Thu Dec 15 2022 Kate Hsuan <hpa@redhat.com> - 0.1.2-1.20220126git2e4d5c9
 - First commit
-
-
 
