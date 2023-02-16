@@ -5,7 +5,7 @@
 Name:           v4l2-relayd
 Summary:        Utils for relaying Gstreamer source to any other Gstreamer source
 Version:        0.1.2
-Release:        2.%{commitdate}git%{shortcommit}%{?dist}
+Release:        3.%{commitdate}git%{shortcommit}%{?dist}
 License:        GPLv2
 
 Source:         https://gitlab.com/vicamo/v4l2-relayd//-/archive/%{commit}/%{name}-%{shortcommit}.tar.gz
@@ -30,19 +30,16 @@ Requires:       v4l2loopback
 This is used to relay the input Gstreamer source to an output Gstreamer source.
 
 %prep
-
 %autosetup -n %{name}-%{commit}
+mkdir -p m4
+autoreconf --force --install --verbose 
 
 %build
-./autogen.sh
-export CFLAGS="${RPM_OPT_FLAGS}"
-export CXXFLAGS="${RPM_OPT_FLAGS}"
-echo $CFLAGS
-make -j`nproc`
+%configure
+%make_build
 
 %install
-mkdir -p %{buildroot}%{_bindir}
-install -p -D -m 0755 src/v4l2-relayd %{buildroot}%{_bindir}
+%make_install
 mkdir -p %{buildroot}%{_sysconfdir}/default
 mkdir -p %{buildroot}%{_sysconfdir}/modprobe.d
 mkdir -p %{buildroot}%{_sysconfdir}/modules-load.d
@@ -55,16 +52,15 @@ install -p -D -m 0644 data/systemd/v4l2-relayd.service %{buildroot}/usr/lib/syst
 %files
 %license LICENSE
 %{_bindir}/v4l2-relayd
-%dir %{_sysconfdir}/default
-%dir %{_sysconfdir}/modprobe.d
-%dir %{_sysconfdir}/modules-load.d
 %config(noreplace) %{_sysconfdir}/default/v4l2-relayd
 %config(noreplace) %{_sysconfdir}/modprobe.d/v4l2-relayd.conf
 %config(noreplace) %{_sysconfdir}/modules-load.d/v4l2-relayd.conf
-%dir /usr/lib/systemd
 /usr/lib/systemd/v4l2-relayd.service
 
 %changelog
+* Thu Feb 16 2023 Kate Hsuan <hpa@redhat.com> - 0.1.2-3.20220126git2e4d5c9
+- Update build and installation scripts
+
 * Thu Jan 12 2023 Kate Hsuan <hpa@redhat.com> - 0.1.2-2.20220126git2e4d5c9
 - Add "Requires: v4l2loopback"
 
