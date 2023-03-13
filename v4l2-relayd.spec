@@ -6,7 +6,7 @@ Name:           v4l2-relayd
 Summary:        Utils for relaying the video stream between two video devices
 Version:        0.1.2
 Release:        4.%{commitdate}git%{shortcommit}%{?dist}
-License:        GPLv2
+License:        GPL-2.0-only
 
 Source:         https://gitlab.com/vicamo/v4l2-relayd//-/archive/%{commit}/%{name}-%{shortcommit}.tar.gz
 
@@ -21,10 +21,8 @@ BuildRequires:  libtool
 BuildRequires:  glib2-devel
 BuildRequires:  gstreamer1-devel
 BuildRequires:  gstreamer1-plugins-base-devel
+BuildRequires:  systemd
 
-Requires:       glib2 >= 2.74.1
-Requires:       gstreamer1
-Requires:       gstreamer1-plugins-base
 Requires:       v4l2loopback
 
 %description
@@ -40,23 +38,23 @@ autoreconf --force --install --verbose
 %make_build
 
 %install
-%make_install
-mkdir -p %{buildroot}%{_sysconfdir}/default
-mkdir -p %{buildroot}%{_sysconfdir}/modprobe.d
-mkdir -p %{buildroot}%{_sysconfdir}/modules-load.d
+%make_install modprobedir=%{_modprobedir}
+# mkdir -p %{buildroot}%{_sysconfdir}/default
+# mkdir -p %{buildroot}%{_sysconfdir}/modprobe.d
+# mkdir -p %{buildroot}%{_sysconfdir}/modules-load.d
 install -p -D -m 0644 data/etc/default/v4l2-relayd %{buildroot}%{_sysconfdir}/default
-install -p -D -m 0644 data/etc/modprobe.d/v4l2-relayd.conf %{buildroot}%{_sysconfdir}/modprobe.d
-install -p -D -m 0644 data/etc/modules-load.d/v4l2-relayd.conf %{buildroot}%{_sysconfdir}/modules-load.d
+install -p -D -m 0644 data/etc/modprobe.d/v4l2-relayd.conf %{buildroot}%{_modprobedir}
+install -p -D -m 0644 data/etc/modules-load.d/v4l2-relayd.conf %{buildroot}%{_modulesloaddir}
 mkdir -p %{buildroot}/usr/lib/systemd
-install -p -D -m 0644 data/systemd/v4l2-relayd.service %{buildroot}/usr/lib/systemd
+install -p -D -m 0644 data/systemd/v4l2-relayd.service %{buildroot}%{_unitdir}
 
 %files
 %license LICENSE
 %{_bindir}/v4l2-relayd
-%config(noreplace) %{_sysconfdir}/default/v4l2-relayd
-%config(noreplace) %{_sysconfdir}/modprobe.d/v4l2-relayd.conf
-%config(noreplace) %{_sysconfdir}/modules-load.d/v4l2-relayd.conf
-/usr/lib/systemd/v4l2-relayd.service
+%{_sysconfdir}/default/v4l2-relayd
+%{_modprobedir}/v4l2-relayd.conf
+%{_modulesloaddir}/v4l2-relayd.conf
+%{_unitdir}/v4l2-relayd.service
 
 %changelog
 * Tue Feb 21 2023 Kate Hsuan <hpa@redhat.com> - 0.1.2-4.20220126git2e4d5c9
