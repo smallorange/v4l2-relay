@@ -3,12 +3,14 @@
 %global shortcommit %(c=%{commit}; echo ${c:0:7})
 
 Name:           v4l2-relayd
-Summary:        Utils for relaying Gstreamer source to any other Gstreamer source
+Summary:        Utils for relaying the video stream between two video devices
 Version:        0.1.2
-Release:        3.%{commitdate}git%{shortcommit}%{?dist}
+Release:        4.%{commitdate}git%{shortcommit}%{?dist}
 License:        GPLv2
 
 Source:         https://gitlab.com/vicamo/v4l2-relayd//-/archive/%{commit}/%{name}-%{shortcommit}.tar.gz
+
+Patch0:         0001-Set-a-new-ID-offset-for-the-private-event.patch
 
 BuildRequires:  systemd-rpm-macros
 BuildRequires:  gcc
@@ -16,8 +18,7 @@ BuildRequires:  g++
 BuildRequires:  autoconf
 BuildRequires:  automake
 BuildRequires:  libtool
-BuildRequires:  glib
-BuildRequires:  glib-devel
+BuildRequires:  glib2-devel
 BuildRequires:  gstreamer1-devel
 BuildRequires:  gstreamer1-plugins-base-devel
 
@@ -27,11 +28,11 @@ Requires:       gstreamer1-plugins-base
 Requires:       v4l2loopback
 
 %description
-This is used to relay the input Gstreamer source to an output Gstreamer source.
+This is used to relay the input GStreamer source to an output GStreamer
+source or a V4L2 device.
 
 %prep
-%autosetup -n %{name}-%{commit}
-mkdir -p m4
+%autosetup -p1 -n %{name}-%{commit}
 autoreconf --force --install --verbose 
 
 %build
@@ -58,6 +59,9 @@ install -p -D -m 0644 data/systemd/v4l2-relayd.service %{buildroot}/usr/lib/syst
 /usr/lib/systemd/v4l2-relayd.service
 
 %changelog
+* Tue Feb 21 2023 Kate Hsuan <hpa@redhat.com> - 0.1.2-4.20220126git2e4d5c9
+- New private event ID
+
 * Thu Feb 16 2023 Kate Hsuan <hpa@redhat.com> - 0.1.2-3.20220126git2e4d5c9
 - Update build and installation scripts
 
