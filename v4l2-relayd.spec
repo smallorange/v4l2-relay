@@ -8,7 +8,10 @@ Version:        0.1.2
 Release:        4.%{commitdate}git%{shortcommit}%{?dist}
 License:        GPL-2.0-only
 
-Source:         https://gitlab.com/vicamo/v4l2-relayd//-/archive/%{commit}/%{name}-%{shortcommit}.tar.gz
+Source0:        https://gitlab.com/vicamo/v4l2-relayd//-/archive/%{commit}/%{name}-%{shortcommit}.tar.gz
+Source1:        v4l2-relayd-tgl
+Source2:        v4l2-relayd-adl
+Source3:        60-ipu6-v4l2-relayd.rules
 
 Patch0:         0001-Set-a-new-ID-offset-for-the-private-event.patch
 
@@ -39,14 +42,13 @@ autoreconf --force --install --verbose
 
 %install
 %make_install modprobedir=%{_modprobedir}
-# mkdir -p %{buildroot}%{_sysconfdir}/default
-# mkdir -p %{buildroot}%{_sysconfdir}/modprobe.d
-# mkdir -p %{buildroot}%{_sysconfdir}/modules-load.d
-install -p -D -m 0644 data/etc/default/v4l2-relayd %{buildroot}%{_sysconfdir}/default
+ln -sf /run/v4l2-relayd %{buildroot}%{_sysconfdir}/default/v4l2-relayd
+install -p -D -m 0644 %{SOURCE1} %{buildroot}%{_datadir}/defaults/etc/ipu6/v4l2-relayd
+install -p -D -m 0644 %{SOURCE2} %{buildroot}%{_datadir}/defaults/etc/ipu6ep/v4l2-relayd
 install -p -D -m 0644 data/etc/modprobe.d/v4l2-relayd.conf %{buildroot}%{_modprobedir}
 install -p -D -m 0644 data/etc/modules-load.d/v4l2-relayd.conf %{buildroot}%{_modulesloaddir}
-mkdir -p %{buildroot}/usr/lib/systemd
 install -p -D -m 0644 data/systemd/v4l2-relayd.service %{buildroot}%{_unitdir}
+install -p -D -m 0644 %{SOURCE3} %{buildroot}%{_udevrulesdir}/60-ipu6-v4l2-relayd.rules
 
 %files
 %license LICENSE
@@ -55,6 +57,8 @@ install -p -D -m 0644 data/systemd/v4l2-relayd.service %{buildroot}%{_unitdir}
 %{_modprobedir}/v4l2-relayd.conf
 %{_modulesloaddir}/v4l2-relayd.conf
 %{_unitdir}/v4l2-relayd.service
+%{_datadir}/defaults
+%{_udevrulesdir}/60-ipu6-v4l2-relayd.rules
 
 %changelog
 * Tue Feb 21 2023 Kate Hsuan <hpa@redhat.com> - 0.1.2-4.20220126git2e4d5c9
