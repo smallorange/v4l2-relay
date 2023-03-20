@@ -11,7 +11,6 @@ License:        GPL-2.0-only
 Source0:        https://gitlab.com/vicamo/v4l2-relayd//-/archive/%{commit}/%{name}-%{shortcommit}.tar.gz
 Source1:        v4l2-relayd-tgl
 Source2:        v4l2-relayd-adl
-Source3:        60-ipu6-v4l2-relayd.rules
 
 Patch0:         0001-Set-a-new-ID-offset-for-the-private-event.patch
 
@@ -48,7 +47,6 @@ install -p -D -m 0644 %{SOURCE2} %{buildroot}%{_datadir}/defaults/etc/ipu6ep/v4l
 install -p -D -m 0644 data/etc/modprobe.d/v4l2-relayd.conf %{buildroot}%{_modprobedir}
 install -p -D -m 0644 data/etc/modules-load.d/v4l2-relayd.conf %{buildroot}%{_modulesloaddir}
 install -p -D -m 0644 data/systemd/v4l2-relayd.service %{buildroot}%{_unitdir}
-install -p -D -m 0644 %{SOURCE3} %{buildroot}%{_udevrulesdir}/60-ipu6-v4l2-relayd.rules
 
 %files
 %license LICENSE
@@ -58,9 +56,11 @@ install -p -D -m 0644 %{SOURCE3} %{buildroot}%{_udevrulesdir}/60-ipu6-v4l2-relay
 %{_modulesloaddir}/v4l2-relayd.conf
 %{_unitdir}/v4l2-relayd.service
 %{_datadir}/defaults
-%{_udevrulesdir}/60-ipu6-v4l2-relayd.rules
 
 %changelog
+* Mon Mar 20 2023 Kate Hsuan <hpa@redhat.com> - 0.1.2-6.20220126git2e4d5c9
+- remove udev rules
+
 * Tue Mar 14 2023 Kate Hsuan <hpa@redhat.com> - 0.1.2-5.20220126git2e4d5c9
 - Configuration files for Tiger and Alder lake platforms
 - udev rules for config file selection
