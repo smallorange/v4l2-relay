@@ -44,6 +44,7 @@ install -p -D -m 0644 data/etc/default/v4l2-relayd %{buildroot}%{_sysconfdir}/de
 install -p -D -m 0644 data/etc/modprobe.d/v4l2-relayd.conf %{buildroot}%{_modprobedir}/
 install -p -D -m 0644 data/etc/modules-load.d/v4l2-relayd.conf %{buildroot}%{_modulesloaddir}/
 install -p -D -m 0644 data/systemd/v4l2-relayd.service %{buildroot}%{_unitdir}/
+sed -i '/^EnvironmentFile=\/etc\/default\/v4l2-relayd/a EnvironmentFile=-\/run\/v4l2-relayd' %{buildroot}%{_unitdir}/v4l2-relayd.service
 install -p -D -m 0644 %{SOURCE1} %{buildroot}%{_presetdir}/95-v4l2-relayd.preset
 
 %post
@@ -67,6 +68,7 @@ install -p -D -m 0644 %{SOURCE1} %{buildroot}%{_presetdir}/95-v4l2-relayd.preset
 %changelog
 * Thu Mar 23 2023 Kate Hsuan <hpa@redhat.com> - 0.1.2-8.20220126git2e4d5c9
 - Drop the symbolic link of the environment file
+- Add EnvironmentFile setting for /run/v4l2-relayd
 
 * Wed Mar 22 2023 Kate Hsuan <hpa@redhat.com> - 0.1.2-7.20220126git2e4d5c9
 - systemd post scripts
