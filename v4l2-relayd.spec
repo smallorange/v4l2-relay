@@ -5,7 +5,7 @@
 Name:           v4l2-relayd
 Summary:        Utils for relaying the video stream between two video devices
 Version:        0.1.2
-Release:        7.%{commitdate}git%{shortcommit}%{?dist}
+Release:        8.%{commitdate}git%{shortcommit}%{?dist}
 License:        GPL-2.0-only
 
 Source0:        https://gitlab.com/vicamo/v4l2-relayd//-/archive/%{commit}/%{name}-%{shortcommit}.tar.gz
@@ -40,7 +40,7 @@ autoreconf --force --install --verbose
 
 %install
 %make_install modprobedir=%{_modprobedir}
-ln -sf /run/v4l2-relayd %{buildroot}%{_sysconfdir}/default/v4l2-relayd
+install -p -D -m 0644 data/etc/default/v4l2-relayd %{buildroot}%{_sysconfdir}/default
 install -p -D -m 0644 data/etc/modprobe.d/v4l2-relayd.conf %{buildroot}%{_modprobedir}/
 install -p -D -m 0644 data/etc/modules-load.d/v4l2-relayd.conf %{buildroot}%{_modulesloaddir}/
 install -p -D -m 0644 data/systemd/v4l2-relayd.service %{buildroot}%{_unitdir}/
@@ -65,7 +65,10 @@ install -p -D -m 0644 %{SOURCE1} %{buildroot}%{_presetdir}/95-v4l2-relayd.preset
 %{_presetdir}/95-v4l2-relayd.preset
 
 %changelog
-* Wed Mar 22 2023 Kate Hsuan <hpa@redhat.com> - 0.0-7.20221112gitcc0b859
+* Thu Mar 23 2023 Kate Hsuan <hpa@redhat.com> - 0.1.2-8.20220126git2e4d5c9
+- Drop the symbolic link of the environment file
+
+* Wed Mar 22 2023 Kate Hsuan <hpa@redhat.com> - 0.1.2-7.20220126git2e4d5c9
 - systemd post scripts
 - removed configuration examples
 
